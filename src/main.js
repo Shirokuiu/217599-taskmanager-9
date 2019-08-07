@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const CARD_COLORS = [`black`, `blue`, `yellow`];
 
@@ -470,7 +470,7 @@ render(document.querySelector(`.board__tasks`), loadMore());
 
 for (let i = 0, len = CARD_COLORS.length; i < len; i++) {
   render(document.querySelector(`.board__tasks`), card(CARD_COLORS, i), `afterbegin`);
-};
+}
 
 render(document.querySelector(`.board__tasks`), cardEdit(), `afterbegin`);
 
