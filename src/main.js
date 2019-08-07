@@ -1,4 +1,6 @@
-const CARD_COLORS = ['black', 'blue', 'yellow'];
+'use strict'
+
+const CARD_COLORS = [`black`, `blue`, `yellow`];
 
 const menu = () => `<section class="control__btn-wrap">
           <input
@@ -456,21 +458,19 @@ const cardEdit = () => `<article class="card card--edit card--yellow card--repea
 
 const loadMore = () => `<button class="load-more" type="button">load more</button>`;
 
-const render = (container, component, place = 'afterend') => {
+const render = (container, component, place = `afterend`) => {
   container.insertAdjacentHTML(place, component);
 };
 
-render(document.querySelector('.main__control'), menu(), 'beforeend');
-render(document.querySelector('.main__control'), search());
-render(document.querySelector('.main__search'), filters());
-render(document.querySelector('.main__filter'), content());
-render(document.querySelector('.board__tasks'), loadMore());
+render(document.querySelector(`.main__control`), menu(), `beforeend`);
+render(document.querySelector(`.main__control`), search());
+render(document.querySelector(`.main__search`), filters());
+render(document.querySelector(`.main__filter`), content());
+render(document.querySelector(`.board__tasks`), loadMore());
+
 for (let i = 0, len = CARD_COLORS.length; i < len; i++) {
-  render(document.querySelector('.board__tasks'), card(CARD_COLORS, i), 'afterbegin');
+  render(document.querySelector(`.board__tasks`), card(CARD_COLORS, i), `afterbegin`);
 };
-render(document.querySelector('.board__tasks'), cardEdit(), 'afterbegin');
 
-
-
-
+render(document.querySelector(`.board__tasks`), cardEdit(), `afterbegin`);
 
