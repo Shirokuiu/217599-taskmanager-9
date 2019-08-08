@@ -2,7 +2,7 @@
 
 const CARD_COLORS = [`black`, `blue`, `yellow`];
 
-const menu = () => `<section class="control__btn-wrap">
+const getMenu = () => `<section class="control__btn-wrap">
           <input
             type="radio"
             name="control"
@@ -31,7 +31,7 @@ const menu = () => `<section class="control__btn-wrap">
           >
         </section>`;
 
-const search = () => `<section class="main__search search container">
+const getSearch = () => `<section class="main__search search container">
         <input
           type="text"
           id="search__input"
@@ -41,7 +41,7 @@ const search = () => `<section class="main__search search container">
         <label class="visually-hidden" for="search__input">Search</label>
       </section>`;
 
-const filters = () => `<section class="main__filter filter container">
+const getFilters = () => `<section class="main__filter filter container">
         <input
           type="radio"
           id="filter__all"
@@ -110,7 +110,7 @@ const filters = () => `<section class="main__filter filter container">
         >
       </section>`;
 
-const content = () => `<section class="board container">
+const getContent = () => `<section class="board container">
         <div class="board__filter-list">
           <a href="#" class="board__filter">SORT BY DEFAULT</a>
           <a href="#" class="board__filter">SORT BY DATE up</a>
@@ -122,7 +122,7 @@ const content = () => `<section class="board container">
         </div>
       </section>`;
 
-const card = (arr, idx) => `<article class="card card--${arr[idx]}">
+const getCard = (color) => `<article class="card card--${color}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -188,7 +188,7 @@ const card = (arr, idx) => `<article class="card card--${arr[idx]}">
             </div>
           </article>`;
 
-const cardEdit = () => `<article class="card card--edit card--yellow card--repeat">
+const getCardEdit = () => `<article class="card card--edit card--yellow card--repeat">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__control">
@@ -456,21 +456,19 @@ const cardEdit = () => `<article class="card card--edit card--yellow card--repea
             </form>
           </article>`;
 
-const loadMore = () => `<button class="load-more" type="button">load more</button>`;
+const getLoadMore = () => `<button class="load-more" type="button">load more</button>`;
 
 const render = (container, component, place = `afterend`) => {
   container.insertAdjacentHTML(place, component);
 };
 
-render(document.querySelector(`.main__control`), menu(), `beforeend`);
-render(document.querySelector(`.main__control`), search());
-render(document.querySelector(`.main__search`), filters());
-render(document.querySelector(`.main__filter`), content());
-render(document.querySelector(`.board__tasks`), loadMore());
+render(document.querySelector(`.main__control`), getMenu(), `beforeend`);
+render(document.querySelector(`.main__control`), getSearch());
+render(document.querySelector(`.main__search`), getFilters());
+render(document.querySelector(`.main__filter`), getContent());
+render(document.querySelector(`.board__tasks`), getLoadMore());
 
-for (let i = 0, len = CARD_COLORS.length; i < len; i++) {
-  render(document.querySelector(`.board__tasks`), card(CARD_COLORS, i), `afterbegin`);
-}
+CARD_COLORS.map((color) => render(document.querySelector(`.board__tasks`), getCard(color), `afterbegin`));
 
-render(document.querySelector(`.board__tasks`), cardEdit(), `afterbegin`);
+render(document.querySelector(`.board__tasks`), getCardEdit(), `afterbegin`);
 
