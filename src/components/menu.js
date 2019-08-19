@@ -1,4 +1,4 @@
-export const getMenu = () => `<section class="control__btn-wrap">
+export const makeMenu = () => `<section class="control__btn-wrap">
           <input
             type="radio"
             name="control"
