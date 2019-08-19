@@ -5,7 +5,7 @@
   "description": "Учебный проект «Менеджер задач» от HTML Academy",
   "scripts": {
     "build": "webpack",
-    "eslint": "eslint src/**/*.js",
+    "eslint": "eslint 'src/**/*.js'",
     "start": "webpack-dev-server --open",
     "test": "npm run eslint"
   },

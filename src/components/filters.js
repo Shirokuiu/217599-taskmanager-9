@@ -1,4 +1,4 @@
-export const getFilters = ({title, count}) => `
+export const makeFilter = ({title, count}) => `
         <input
           type="radio"
           id="filter__all"

@@ -4,21 +4,21 @@ export const getTask = () => ({
     `Сделать домашку`,
     `Пройти интенсив на соточку`
   ][Math.floor(Math.random() * 3)],
-  dueDate: Date.now() + 1 + Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000,
+  dueDate: Math.round(Math.random()) ? Date.now() + 1 + Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000 : Date.now() + 1 + Math.floor(Math.random() * 7 - 7) * 24 * 60 * 60 * 1000,
   repeatingDays: {
-    mo: false, 
-    tu: false, 
-    we: false, 
-    th: Boolean(Math.round(Math.random())), 
-    fr: false, 
-    sa: false, 
+    mo: false,
+    tu: false,
+    we: false,
+    th: Boolean(Math.round(Math.random())),
+    fr: false,
+    sa: false,
     su: false,
   },
-  tags: new Set([
+  tags: [...new Set([
     `homework`,
     `theory`,
     `practice`,
-  ]),
+  ])].filter(() => Math.random() > 0.5),
   color: [
     `black`,
     `yellow`,

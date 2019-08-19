@@ -1,4 +1,4 @@
-export const getSearch = () => `<section class="main__search search container">
+export const makeSearch = () => `<section class="main__search search container">
         <input
           type="text"
           id="search__input"
