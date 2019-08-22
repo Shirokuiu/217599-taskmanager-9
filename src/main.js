@@ -2,16 +2,32 @@ import {makeMenu} from './components/menu';
 import {makeSearch} from './components/search';
 import {makeFilter} from './components/filters';
 import {makeContent} from './components/content';
-import {makeCard} from './components/card';
-import {makeCardEdit} from './components/card-edit';
+import Card from './components/card';
+import CardEdit from './components/card-edit';
 import {makeLoadMore} from './components/load-more';
 import {getTask, getFilter} from './data';
+import {render as rendering, Position} from './utils';
 
 const APP_SETTINGS = {
-  totalTasks: 15,
+  totalTasks: 16,
   tasksToShow: 8,
   loadTaskItems: 8,
   currentTasks: 0,
+};
+
+const renderTask = (tasksData) => {
+  const card = new Card(tasksData);
+  const cardEdit = new CardEdit(tasksData);
+
+  card.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, () => {
+    document.querySelector(`.board__tasks`).replaceChild(cardEdit.getElement(), card.getElement());
+  });
+
+  cardEdit.getElement().querySelector(`.card__save`).addEventListener(`click`, () => {
+    document.querySelector(`.board__tasks`).replaceChild(card.getElement(), cardEdit.getElement());
+  });
+
+  rendering(document.querySelector(`.board__tasks`), card.getElement(), Position.BEFOREEND);
 };
 
 const render = (container, component, place = `afterend`) => {
@@ -39,13 +55,13 @@ const getFiltersCount = () => {
 const showMore = () => {
   APP_SETTINGS.currentTasks = document.querySelectorAll(`.card`).length;
   if ((APP_SETTINGS.currentTasks + APP_SETTINGS.tasksToShow) >= tasks.length - 1) {
-    tasks.slice((APP_SETTINGS.currentTasks - 1), APP_SETTINGS.currentTasks + APP_SETTINGS.tasksToShow)
-    .forEach((task) => render(document.querySelector(`.board__tasks`), makeCard(task), `beforeend`));
+    tasks.slice((APP_SETTINGS.currentTasks), APP_SETTINGS.currentTasks + APP_SETTINGS.tasksToShow)
+    .forEach((task) => renderTask(task));
     document.querySelector(`.load-more`).remove();
     return;
   }
   tasks.slice((APP_SETTINGS.currentTasks - 1), APP_SETTINGS.currentTasks + APP_SETTINGS.tasksToShow)
-    .forEach((task) => render(document.querySelector(`.board__tasks`), makeCard(task), `beforeend`));
+    .forEach((task) => renderTask(task));
 };
 
 const tasks = makeTasksData(getTask, APP_SETTINGS.totalTasks);
@@ -58,7 +74,6 @@ filters.reverse().forEach((filter) => render(document.querySelector(`.main__filt
 render(document.querySelector(`.main__filter`), makeContent());
 render(document.querySelector(`.board__tasks`), makeLoadMore());
 
-tasks.slice(0, (APP_SETTINGS.tasksToShow - 1)).forEach((task) => render(document.querySelector(`.board__tasks`), makeCard(task), `afterbegin`));
-render(document.querySelector(`.board__tasks`), makeCardEdit(), `afterbegin`);
+tasks.slice(0, (APP_SETTINGS.tasksToShow)).forEach((task) => renderTask(task));
 document.querySelector(`.load-more`).addEventListener(`click`, showMore);
 
