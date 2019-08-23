@@ -4,6 +4,7 @@ import {makeFilter} from './components/filters';
 import {makeContent} from './components/content';
 import Card from './components/card';
 import CardEdit from './components/card-edit';
+import NoTask from './components/no-task';
 import {makeLoadMore} from './components/load-more';
 import {getTask, getFilter} from './data';
 import {render as rendering, Position} from './utils';
@@ -19,15 +20,38 @@ const renderTask = (tasksData) => {
   const card = new Card(tasksData);
   const cardEdit = new CardEdit(tasksData);
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      document.querySelector(`.board__tasks`).replaceChild(card.getElement(), cardEdit.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   card.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, () => {
     document.querySelector(`.board__tasks`).replaceChild(cardEdit.getElement(), card.getElement());
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
+
+  cardEdit.getElement().querySelector(`.card__text`).addEventListener(`focus`, () => {
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
+
+  cardEdit.getElement().querySelector(`.card__text`).addEventListener(`blur`, () => {
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   cardEdit.getElement().querySelector(`.card__save`).addEventListener(`click`, () => {
     document.querySelector(`.board__tasks`).replaceChild(card.getElement(), cardEdit.getElement());
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   rendering(document.querySelector(`.board__tasks`), card.getElement(), Position.BEFOREEND);
+};
+
+const renderNoTask = () => {
+  const noTask = new NoTask();
+
+  rendering(document.querySelector(`.board`), noTask.getElement(), Position.BEFOREEND);
 };
 
 const render = (container, component, place = `afterend`) => {
@@ -42,8 +66,18 @@ const makeTasksData = (createTask, count) => {
   return tasks;
 };
 
+const shouldRenderTask = (tasksArr, renderTasks, renderNoTasks) => {
+  const tasksInArchive = tasksArr.filter((task) => task.isArchive);
+
+  if (tasksArr.length || tasksArr.length === tasksInArchive) {
+    renderTasks();
+    return;
+  }
+  renderNoTasks();
+};
+
 const getFiltersCount = () => {
-  filters[0].count = tasks.length + 1;
+  filters[0].count = tasks.length;
   filters[1].count = tasks.filter((it) => new Date(it.dueDate).toDateString().split(` `).slice(2, 3)[0] < new Date(Date.now()).toDateString().split(` `).slice(2, 3)[0]).length;
   filters[2].count = tasks.filter((it) => new Date(it.dueDate).toDateString() === new Date(Date.now()).toDateString()).length;
   filters[3].count = tasks.filter((it) => it.isFavorite).length;
@@ -70,10 +104,15 @@ const filters = getFilter();
 getFiltersCount();
 render(document.querySelector(`.main__control`), makeMenu(), `beforeend`);
 render(document.querySelector(`.main__control`), makeSearch());
-filters.reverse().forEach((filter) => render(document.querySelector(`.main__filter`), makeFilter(filter), `afterbegin`));
 render(document.querySelector(`.main__filter`), makeContent());
-render(document.querySelector(`.board__tasks`), makeLoadMore());
+filters.reverse().forEach((filter) => render(document.querySelector(`.main__filter`), makeFilter(filter), `afterbegin`));
 
-tasks.slice(0, (APP_SETTINGS.tasksToShow)).forEach((task) => renderTask(task));
-document.querySelector(`.load-more`).addEventListener(`click`, showMore);
-
+shouldRenderTask(tasks, () => {
+  tasks.slice(0, (APP_SETTINGS.tasksToShow)).forEach((task) => renderTask(task));
+  render(document.querySelector(`.board__tasks`), makeLoadMore());
+  document.querySelector(`.load-more`).addEventListener(`click`, showMore);
+}, () => {
+  renderNoTask();
+  document.querySelector(`.board__filter-list`).remove();
+  document.querySelector(`.board__tasks`).remove();
+});
