@@ -1,4 +1,8 @@
-export const makeSearch = () => `<section class="main__search search container">
+import Component from "./component";
+
+export default class Search extends Component {
+  getTemplate() {
+    return `<section class="main__search search container">
         <input
           type="text"
           id="search__input"
@@ -7,3 +11,5 @@ export const makeSearch = () => `<section class="main__search search container">
         />
         <label class="visually-hidden" for="search__input">Search</label>
       </section>`;
+  }
+}

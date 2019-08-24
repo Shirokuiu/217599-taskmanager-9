@@ -1,17 +1,10 @@
-import {createElement} from '../utils';
+import Component from "./component";
 
-export default class CardEdit {
+export default class TaskEdit extends Component {
   constructor({color, repeatingDays}) {
+    super();
     this._color = color;
     this._repeatingDays = repeatingDays;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
   }
 
   getTemplate() {
