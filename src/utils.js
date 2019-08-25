@@ -1,10 +1,3 @@
-export const APP_SETTINGS = {
-  totalTasks: 16,
-  tasksToShow: 8,
-  loadTaskItems: 8,
-  currentTasks: 0,
-};
-
 export const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
@@ -16,7 +9,7 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export const render = (container, component, place) => {
+export const render = (container, component, place = Position.BEFOREEND) => {
   switch (place) {
     case Position.AFTERBEGIN:
       container.prepend(component);

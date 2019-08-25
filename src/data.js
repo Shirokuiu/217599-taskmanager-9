@@ -34,29 +34,36 @@ export const getFilter = () => ([
   {
     title: `All`,
     count: 0,
+    checked: true,
   },
   {
     title: `Overdue`,
     count: 0,
+    checked: false,
   },
   {
     title: `Today`,
     count: 0,
+    checked: false,
   },
   {
     title: `Favorites`,
     count: 0,
+    checked: false,
   },
   {
     title: `Repeating`,
     count: 0,
+    checked: false,
   },
   {
     title: `Tags`,
     count: 0,
+    checked: false,
   },
   {
     title: `Archive`,
     count: 0,
+    checked: false,
   },
 ]);

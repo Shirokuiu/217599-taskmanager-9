@@ -14,7 +14,7 @@ export default class Component {
 
   removeElement(template, element = null) {
     unrender(template);
-    if (!element) {
+    if (element) {
       element = null;
     }
   }
