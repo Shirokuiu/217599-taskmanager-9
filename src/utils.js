@@ -1,3 +1,10 @@
+export const APP_SETTINGS = {
+  totalTasks: 16,
+  tasksToShow: 8,
+  loadTaskItems: 8,
+  currentTasks: 0,
+};
+
 export const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
