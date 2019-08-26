@@ -8,7 +8,7 @@ import Sort from "../components/sort";
 import LoadMore from "../components/load-more";
 import NoTask from "../components/no-task";
 
-import {render} from "../utils";
+import {render, unrender} from "../utils";
 
 export default class BoardController extends Controller {
   constructor(taskMocks, appInfo) {
@@ -75,7 +75,8 @@ export default class BoardController extends Controller {
     if ((this._appInfo.currentTasks + this._appInfo.tasksToShow) >= this._taskMocks.length - 1) {
       this._taskMocks.slice((this._appInfo.currentTasks), this._appInfo.currentTasks + this._appInfo.tasksToShow)
         .forEach((taskMock) => this._renderTask(taskMock));
-      this._loadMore.removeElement(this._loadMore.getElement(), this._loadMore, null);
+      unrender(this._loadMore.getElement());
+      this._loadMore.removeElement();
       return;
     }
     this._taskMocks.slice((this._appInfo.currentTasks - 1), this._appInfo.currentTasks + this._appInfo.tasksToShow)

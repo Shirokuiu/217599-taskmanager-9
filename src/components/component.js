@@ -16,11 +16,8 @@ export default class Component {
     return this._element;
   }
 
-  removeElement(template, element = null, value = null) {
-    unrender(template);
-    if (element) {
-      this.element = value;
-    }
+  removeElement(value = null) {
+    this.element = value;
   }
 
   getTemplate() {
