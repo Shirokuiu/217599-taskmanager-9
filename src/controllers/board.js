@@ -43,7 +43,6 @@ export default class BoardController {
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         this._boardTasks.getElement().replaceChild(task.getElement(), taskEdit.getElement());
-        taskEdit.removeElement(taskEdit.getElement());
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
