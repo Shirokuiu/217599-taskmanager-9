@@ -1,3 +1,5 @@
+import Controller from "./controller";
+
 import Board from "../components/board";
 import BoardTasks from "../components/board-tasks";
 import Task from "../components/task";
@@ -8,9 +10,10 @@ import NoTask from "../components/no-task";
 
 import {render} from "../utils";
 
-export default class BoardController {
-  constructor(container, taskMocks, appInfo) {
-    this._container = container;
+export default class BoardController extends Controller {
+  constructor(taskMocks, appInfo) {
+    super();
+    this.container = document.querySelector(`.main`);
     this._taskMocks = taskMocks;
     this._appInfo = appInfo;
     this._board = new Board();
@@ -21,7 +24,7 @@ export default class BoardController {
   }
 
   init() {
-    render(this._container, this._board.getElement());
+    render(this.container, this._board.getElement());
 
     this._shouldRenderTask(this._taskMocks, () => {
       render(this._board.getElement(), this._sort.getElement());

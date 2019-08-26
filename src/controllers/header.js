@@ -1,12 +1,15 @@
+import Controller from "./controller";
+
 import Menu from "../components/menu";
 import Search from "../components/search";
 import Filters from "../components/filters";
 
 import {render} from '../utils';
 
-export default class HeaderController {
-  constructor(container, taskMocks, filterMocks) {
-    this._container = container;
+export default class HeaderController extends Controller {
+  constructor(taskMocks, filterMocks) {
+    super();
+    this.container = document.querySelector(`.main`);
     this._taskMocks = taskMocks;
     this._filterMocks = this._getFiltersCount(filterMocks, this._taskMocks);
     this._menu = new Menu();
@@ -15,9 +18,9 @@ export default class HeaderController {
   }
 
   init() {
-    render(this._container.querySelector(`.main__control`), this._menu.getElement());
-    render(this._container, this._search.getElement());
-    render(this._container, this._filters.getElement());
+    render(this.container.querySelector(`.main__control`), this._menu.getElement());
+    render(this.container, this._search.getElement());
+    render(this.container, this._filters.getElement());
   }
 
   _getFiltersCount(filterMocks, taskMocks) {
