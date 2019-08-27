@@ -1,8 +1,12 @@
-import {createElement, unrender} from '../utils';
+import {createElement} from '../utils';
 
 export default class Component {
   constructor() {
     this._element = null;
+  }
+
+  set element(value) {
+    this._element = value;
   }
 
   getElement() {
@@ -12,11 +16,8 @@ export default class Component {
     return this._element;
   }
 
-  removeElement(template, element = null) {
-    unrender(template);
-    if (!element) {
-      element = null;
-    }
+  removeElement(value = null) {
+    this.element = value;
   }
 
   getTemplate() {

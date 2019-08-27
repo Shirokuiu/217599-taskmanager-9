@@ -1,29 +1,42 @@
+import Controller from "./controller";
+
 import Board from "../components/board";
 import BoardTasks from "../components/board-tasks";
 import Task from "../components/task";
 import TaskEdit from "../components/task-edit";
 import Sort from "../components/sort";
 import LoadMore from "../components/load-more";
+import NoTask from "../components/no-task";
 
-import {render, Position, APP_SETTINGS} from "../utils";
+import {render, unrender} from "../utils";
 
-export default class BoardController {
-  constructor(container, taskMocks) {
-    this._container = container;
+export default class BoardController extends Controller {
+  constructor(taskMocks, appInfo) {
+    super();
+    this.container = document.querySelector(`.main`);
     this._taskMocks = taskMocks;
+    this._appInfo = appInfo;
     this._board = new Board();
     this._boardTasks = new BoardTasks();
     this._sort = new Sort();
     this._loadMore = new LoadMore();
+    this._noTask = new NoTask();
   }
 
   init() {
-    render(this._container, this._board.getElement(), Position.BEFOREEND);
-    render(this._board.getElement(), this._sort.getElement(), Position.BEFOREEND);
-    render(this._board.getElement(), this._boardTasks.getElement(), Position.BEFOREEND);
-    this._taskMocks.slice(0, APP_SETTINGS.tasksToShow).forEach((taskMock) => this._renderTask(taskMock));
-    render(this._board.getElement(), this._loadMore.getElement(), Position.BEFOREEND);
-    this._loadMore.getElement().addEventListener(`click`, this._onLoadMoreClick.bind(this));
+    render(this.container, this._board.getElement());
+
+    this._shouldRenderTask(this._taskMocks, () => {
+      render(this._board.getElement(), this._sort.getElement());
+      render(this._board.getElement(), this._boardTasks.getElement());
+      this._taskMocks.slice(0, this._appInfo.tasksToShow).forEach((taskMock) => this._renderTask(taskMock));
+      render(this._board.getElement(), this._loadMore.getElement());
+      this._loadMore.getElement().addEventListener(`click`, this._onLoadMoreClick.bind(this));
+
+      this._sort.getElement().addEventListener(`click`, this._onSortClick.bind(this));
+    }, () => {
+      render(this._board.getElement(), this._noTask.getElement());
+    });
   }
 
   _renderTask(taskMocks) {
@@ -33,7 +46,6 @@ export default class BoardController {
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         this._boardTasks.getElement().replaceChild(task.getElement(), taskEdit.getElement());
-        taskEdit.removeElement(taskEdit.getElement());
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
@@ -55,19 +67,52 @@ export default class BoardController {
       this._boardTasks.getElement().replaceChild(task.getElement(), taskEdit.getElement());
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
-
-    render(this._boardTasks.getElement(), task.getElement(), Position.BEFOREEND);
+    render(this._boardTasks.getElement(), task.getElement());
   }
 
   _onLoadMoreClick() {
-    APP_SETTINGS.currentTasks = this._boardTasks.getElement().querySelectorAll(`.card`).length;
-    if ((APP_SETTINGS.currentTasks + APP_SETTINGS.tasksToShow) >= this._taskMocks.length - 1) {
-      this._taskMocks.slice((APP_SETTINGS.currentTasks), APP_SETTINGS.currentTasks + APP_SETTINGS.tasksToShow)
+    this._appInfo.currentTasks = this._boardTasks.getElement().querySelectorAll(`.card`).length;
+    if ((this._appInfo.currentTasks + this._appInfo.tasksToShow) >= this._taskMocks.length - 1) {
+      this._taskMocks.slice((this._appInfo.currentTasks), this._appInfo.currentTasks + this._appInfo.tasksToShow)
         .forEach((taskMock) => this._renderTask(taskMock));
-      this._loadMore.removeElement(this._loadMore.getElement());
+      unrender(this._loadMore.getElement());
+      this._loadMore.removeElement();
       return;
     }
-    this._taskMocks.slice((APP_SETTINGS.currentTasks - 1), APP_SETTINGS.currentTasks + APP_SETTINGS.tasksToShow)
+    this._taskMocks.slice((this._appInfo.currentTasks - 1), this._appInfo.currentTasks + this._appInfo.tasksToShow)
       .forEach((taskMock) => this._renderTask(taskMock));
+  }
+
+  _shouldRenderTask(taskMocks, renderTasks, renderNoTasks) {
+    const tasksInArchive = taskMocks.filter((task) => task.isArchive);
+
+    if (taskMocks.length || taskMocks.length === tasksInArchive) {
+      renderTasks();
+      return;
+    }
+    renderNoTasks();
+  }
+
+  _onSortClick(evt) {
+    evt.preventDefault();
+
+    if (evt.target.tagName.toLocaleLowerCase() !== `a`) {
+      return;
+    }
+
+    this._boardTasks.getElement().innerHTML = ``;
+
+    switch (evt.target.dataset.sort) {
+      case `default`:
+        this._taskMocks.slice(0, this._appInfo.tasksToShow).forEach((task) => this._renderTask(task));
+        break;
+      case `dateUp`:
+        this._taskMocks.slice(0, this._appInfo.tasksToShow)
+          .sort((a, b) => a.dueDate - b.dueDate).forEach((task) => this._renderTask(task));
+        break;
+      case `dateDown`:
+        this._taskMocks.slice(0, this._appInfo.tasksToShow)
+          .sort((a, b) => b.dueDate - a.dueDate).forEach((task) => this._renderTask(task));
+    }
   }
 }
